@@ -1,4 +1,9 @@
 package pl.marczyk.parkinglotapi.controller.dto;
 
-public record FreeParkingSpotRequest(String vehicleReg) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+
+public record FreeParkingSpotRequest(
+        @JsonProperty("vehicleReg") @NotBlank String registration
+) {
 }
