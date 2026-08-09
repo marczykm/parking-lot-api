@@ -8,4 +8,9 @@ import pl.marczyk.parkinglotapi.repository.model.VehicleType;
 public record ParkVehicleRequest(
         @JsonProperty("vehicleReg") @NotBlank String registration,
         @JsonProperty("vehicleType") @NotNull VehicleType type) {
+
+    public ParkVehicleRequest(String registration, VehicleType type) {
+        this.registration = registration == null ? null : registration.trim().toUpperCase();
+        this.type = type;
+    }
 }
