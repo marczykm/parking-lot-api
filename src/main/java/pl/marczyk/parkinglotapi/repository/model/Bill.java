@@ -3,6 +3,8 @@ package pl.marczyk.parkinglotapi.repository.model;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -11,5 +13,5 @@ import lombok.experimental.FieldDefaults;
 public class Bill {
 
     String id;
-    final Double cost;
+    final BigDecimal cost;
 }

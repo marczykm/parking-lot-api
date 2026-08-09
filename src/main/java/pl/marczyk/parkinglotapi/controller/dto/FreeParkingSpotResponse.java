@@ -1,11 +1,12 @@
 package pl.marczyk.parkinglotapi.controller.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record FreeParkingSpotResponse(
         String billId,
         String vehicleReg,
-        double vehicleCharge,
+        BigDecimal vehicleCharge,
         LocalDateTime timeIn,
         LocalDateTime timeOut
 ) {

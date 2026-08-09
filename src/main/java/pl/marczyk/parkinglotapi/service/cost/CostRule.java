@@ -1,6 +1,8 @@
 package pl.marczyk.parkinglotapi.service.cost;
 
+import java.math.BigDecimal;
+
 public interface CostRule {
 
-    double apply(long minutes);
+    BigDecimal apply(long minutes);
 }
