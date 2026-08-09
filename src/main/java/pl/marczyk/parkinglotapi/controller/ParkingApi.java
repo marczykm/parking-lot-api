@@ -23,7 +23,7 @@ public class ParkingApi {
 
     @PostMapping
     public ResponseEntity<ParkVehicleResponse> parkAVehicle(@Validated @RequestBody ParkVehicleRequest request) {
-        var vehicle = parkingSpotsCoordinatorService.park(request.vehicleReg(),  request.vehicleType());
+        var vehicle = parkingSpotsCoordinatorService.park(request.registration(),  request.type());
         return ResponseEntity.ok(new ParkVehicleResponse(vehicle.getRegistration(), vehicle.getSpot(), vehicle.getTimeIn()));
     }
 
