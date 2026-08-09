@@ -7,6 +7,6 @@ public class FiveMinuteCostRule implements AdditionalChargeCostRule {
 
     @Override
     public double apply(long minutes) {
-        return Math.ceil(minutes / 5d);
+        return Math.floor(minutes / 5d);
     }
 }
