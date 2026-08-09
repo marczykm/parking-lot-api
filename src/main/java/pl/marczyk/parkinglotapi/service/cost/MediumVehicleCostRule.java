@@ -1,12 +1,13 @@
 package pl.marczyk.parkinglotapi.service.cost;
 
 import org.springframework.stereotype.Component;
+import pl.marczyk.parkinglotapi.repository.model.VehicleType;
 
 @Component
 public class MediumVehicleCostRule implements VehicleTypeCostRule {
     @Override
-    public boolean applies(int vehicleType) {
-        return vehicleType == 2;
+    public boolean applies(VehicleType vehicleType) {
+        return vehicleType == VehicleType.MEDIUM;
     }
 
     @Override

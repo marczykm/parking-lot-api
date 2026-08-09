@@ -1,5 +1,7 @@
 package pl.marczyk.parkinglotapi.service.cost;
 
+import pl.marczyk.parkinglotapi.repository.model.VehicleType;
+
 public interface VehicleTypeCostRule extends CostRule{
-    boolean applies(int vehicleType);
+    boolean applies(VehicleType vehicleType);
 }

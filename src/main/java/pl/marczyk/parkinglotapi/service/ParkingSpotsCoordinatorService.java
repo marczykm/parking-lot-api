@@ -8,6 +8,7 @@ import pl.marczyk.parkinglotapi.exception.NoSuchVehicleParkedException;
 import pl.marczyk.parkinglotapi.exception.VehicleAlreadyParkedException;
 import pl.marczyk.parkinglotapi.repository.VehicleRepository;
 import pl.marczyk.parkinglotapi.repository.model.Vehicle;
+import pl.marczyk.parkinglotapi.repository.model.VehicleType;
 import pl.marczyk.parkinglotapi.service.cost.CostComputationService;
 
 import java.time.LocalDateTime;
@@ -34,7 +35,7 @@ public class ParkingSpotsCoordinatorService {
         }
     }
 
-    public Vehicle park(String vehicleReg, int vehicleType) {
+    public Vehicle park(String vehicleReg, VehicleType vehicleType) {
         Integer spot = findEmptySpot().orElseThrow(NoSpotsLeftException::new);
         vehicleRepository.findByRegistration(vehicleReg)
                 .map(Vehicle::getSpot)

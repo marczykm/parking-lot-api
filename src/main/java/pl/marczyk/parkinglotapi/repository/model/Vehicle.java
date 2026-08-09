@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 public class Vehicle {
 
     final String registration;
-    final int type;
+    final VehicleType type;
     final LocalDateTime timeIn;
     Integer spot;
     Long billId;
 
-    public Vehicle(String registration, int type, int spot) {
+    public Vehicle(String registration, VehicleType type, int spot) {
         this.registration = registration;
         this.type = type;
         this.spot = spot;

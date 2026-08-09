@@ -1,4 +1,6 @@
 package pl.marczyk.parkinglotapi.controller.dto;
 
-public record ParkVehicleRequest(String vehicleReg, int vehicleType) {
+import pl.marczyk.parkinglotapi.repository.model.VehicleType;
+
+public record ParkVehicleRequest(String vehicleReg, VehicleType vehicleType) {
 }

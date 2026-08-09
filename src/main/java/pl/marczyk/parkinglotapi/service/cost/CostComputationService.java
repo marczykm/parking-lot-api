@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.marczyk.parkinglotapi.exception.UnknownVehicleTypeException;
 import pl.marczyk.parkinglotapi.repository.BillRepository;
 import pl.marczyk.parkinglotapi.repository.model.Bill;
+import pl.marczyk.parkinglotapi.repository.model.VehicleType;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class CostComputationService {
     private final List<AdditionalChargeCostRule> additionalChargeRules;
     private final BillRepository billRepository;
 
-    public Bill compute(int vehicleType, long minutes) {
+    public Bill compute(VehicleType vehicleType, long minutes) {
         var vehicleTypeCost = vehicleTypeCostRules.stream()
                 .filter(rule -> rule.applies(vehicleType))
                 .findFirst()
