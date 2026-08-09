@@ -6,7 +6,6 @@ import java.util.Optional;
 
 public interface VehicleRepository {
 
-    Optional<Vehicle> findByRegistrationAndTimeOutNull(String registration);
+    Optional<Vehicle> findByRegistration(String registration);
     Vehicle save(Vehicle vehicle);
-    long countOccupied();
 }
