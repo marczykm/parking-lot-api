@@ -4,12 +4,12 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Bill {
 
-    Long id;
-    Double cost;
+    String id;
+    final Double cost;
 }
