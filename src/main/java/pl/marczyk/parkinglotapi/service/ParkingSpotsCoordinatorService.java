@@ -1,6 +1,7 @@
 package pl.marczyk.parkinglotapi.service;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.marczyk.parkinglotapi.controller.dto.FreeParkingSpotResponse;
 import pl.marczyk.parkinglotapi.exception.NoSpotsLeftException;
@@ -22,15 +23,20 @@ public class ParkingSpotsCoordinatorService {
     private final Map<Integer, Optional<Vehicle>> spots = new ConcurrentHashMap<>();
     private final VehicleRepository vehicleRepository;
     private final CostComputationService costComputationService;
+    private final int totalSpots;
 
-    public ParkingSpotsCoordinatorService(VehicleRepository vehicleRepository, CostComputationService costComputationService) {
+    public ParkingSpotsCoordinatorService(
+            VehicleRepository vehicleRepository,
+            CostComputationService costComputationService,
+            @Value("${parking.total-spots}") int totalSpots) {
         this.vehicleRepository = vehicleRepository;
         this.costComputationService = costComputationService;
+        this.totalSpots = totalSpots;
     }
 
     @PostConstruct
     private void onInit() {
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= totalSpots; i++) {
             spots.put(i, Optional.empty());
         }
     }
