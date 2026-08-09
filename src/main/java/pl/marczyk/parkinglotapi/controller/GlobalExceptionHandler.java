@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({NoSuchVehicleParkedException.class, VehicleNotFoundException.class})
-    public ResponseEntity<ErrorResponse> handleNotFound(NoSuchVehicleParkedException ex){
+    public ResponseEntity<ErrorResponse> handleNotFound(Exception ex){
         return status(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler({UnknownVehicleTypeException.class, VehicleAlreadyParkedException.class, NoSpotsLeftException.class})
-    public ResponseEntity<ErrorResponse> handleBadRequest(VehicleAlreadyParkedException ex){
+    public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex){
         return status(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
