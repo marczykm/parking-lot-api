@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Vehicle {
 
@@ -15,7 +14,6 @@ public class Vehicle {
     final VehicleType type;
     final LocalDateTime timeIn;
     Integer spot;
-    Long billId;
 
     public Vehicle(String registration, VehicleType type, int spot) {
         this.registration = registration;

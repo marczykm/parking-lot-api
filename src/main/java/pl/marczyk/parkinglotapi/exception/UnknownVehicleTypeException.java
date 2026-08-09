@@ -6,4 +6,8 @@ public class UnknownVehicleTypeException extends RuntimeException {
     public UnknownVehicleTypeException(VehicleType vehicleType) {
         super("Unknown vehicle type: " + vehicleType);
     }
+
+    public UnknownVehicleTypeException(Integer vehicleTypeValue) {
+        super("Unknown vehicle type: " + vehicleTypeValue);
+    }
 }

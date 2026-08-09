@@ -10,7 +10,6 @@ import pl.marczyk.parkinglotapi.exception.VehicleAlreadyParkedException;
 import pl.marczyk.parkinglotapi.repository.VehicleRepository;
 import pl.marczyk.parkinglotapi.repository.model.Vehicle;
 import pl.marczyk.parkinglotapi.repository.model.VehicleType;
-import pl.marczyk.parkinglotapi.service.cost.CostComputationService;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -22,15 +21,16 @@ public class ParkingSpotsCoordinatorService {
 
     private final Map<Integer, Optional<Vehicle>> spots = new ConcurrentHashMap<>();
     private final VehicleRepository vehicleRepository;
-    private final CostComputationService costComputationService;
+    private final BillingService billingService;
     private final int totalSpots;
+    private final Object parkingLock = new Object();
 
     public ParkingSpotsCoordinatorService(
             VehicleRepository vehicleRepository,
-            CostComputationService costComputationService,
+            BillingService billingService,
             @Value("${parking.total-spots}") int totalSpots) {
         this.vehicleRepository = vehicleRepository;
-        this.costComputationService = costComputationService;
+        this.billingService = billingService;
         this.totalSpots = totalSpots;
     }
 
@@ -42,34 +42,38 @@ public class ParkingSpotsCoordinatorService {
     }
 
     public Vehicle park(String vehicleReg, VehicleType vehicleType) {
-        Integer spot = findEmptySpot().orElseThrow(NoSpotsLeftException::new);
-        vehicleRepository.findByRegistration(vehicleReg)
-                .map(Vehicle::getSpot)
-                .ifPresent(s -> {
-                    throw new VehicleAlreadyParkedException(vehicleReg);
-                });
-        Vehicle vehicle = vehicleRepository.save(new Vehicle(vehicleReg, vehicleType, spot));
+        synchronized (parkingLock) {
+            Integer spot = findEmptySpot().orElseThrow(NoSpotsLeftException::new);
+            vehicleRepository.findByRegistration(vehicleReg)
+                    .map(Vehicle::getSpot)
+                    .ifPresent(s -> {
+                        throw new VehicleAlreadyParkedException(vehicleReg);
+                    });
+            Vehicle vehicle = vehicleRepository.save(new Vehicle(vehicleReg, vehicleType, spot));
 
-        spots.put(spot, Optional.of(vehicle));
-        return vehicle;
+            spots.put(spot, Optional.of(vehicle));
+            return vehicle;
+        }
     }
 
     public FreeParkingSpotResponse unpark(String vehicleReg) {
-        var timeOut = LocalDateTime.now();
-        var vehicle = vehicleRepository.findByRegistration(vehicleReg)
-                .orElseThrow(() -> new NoSuchVehicleParkedException(vehicleReg));
-        if (vehicle.getSpot() == null) {
-            throw new NoSuchVehicleParkedException(vehicleReg);
+        synchronized (parkingLock) {
+            var timeOut = LocalDateTime.now();
+            var vehicle = vehicleRepository.findByRegistration(vehicleReg)
+                    .orElseThrow(() -> new NoSuchVehicleParkedException(vehicleReg));
+            if (vehicle.getSpot() == null) {
+                throw new NoSuchVehicleParkedException(vehicleReg);
+            }
+            var minutesSpent = ChronoUnit.MINUTES.between(vehicle.getTimeIn(), timeOut);
+            var bill = billingService.issueBill(vehicle.getType(), minutesSpent);
+            spots.put(vehicle.getSpot(), Optional.empty());
+            vehicle.setSpot(null);
+            vehicleRepository.save(vehicle);
+            return new FreeParkingSpotResponse(
+                    bill.getId(),
+                    vehicle.getRegistration(), bill.getCost(), vehicle.getTimeIn(), timeOut
+            );
         }
-        var minutesSpent = ChronoUnit.MINUTES.between(vehicle.getTimeIn(), timeOut);
-        var bill = costComputationService.compute(vehicle.getType(), minutesSpent);
-        spots.put(vehicle.getSpot(), Optional.empty());
-        vehicle.setSpot(null);
-        vehicleRepository.save(vehicle);
-        return new FreeParkingSpotResponse(
-                bill.getId(),
-                vehicle.getRegistration(), bill.getCost(), vehicle.getTimeIn(), timeOut
-        );
     }
 
     public int getOccupiedSpots() {
